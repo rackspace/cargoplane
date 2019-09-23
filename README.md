@@ -1,4 +1,4 @@
-# Cargoplane - serverless publish/subscribe for webapps and AWS
+# Cargoplane - Serverless publish/subscribe for webapps and AWS
 
 ## What?
 
@@ -7,7 +7,7 @@ It is written in Typescript, but usable wit Javascript as well. The Lambda code 
 
 This repository is developed and maintained by the [Onica](https://www.onica.com) Cloud Native Development Practice.
 
-TODO: Much more documentation needed.
+**TODO: Much more documentation needed.**
    
 ### Example
 
@@ -30,6 +30,13 @@ Here are the steps:
 From there, you can:
 1. Subscribe to topics and receive messages
 1. Publish messages to topics
+
+### Usage
+
+The cloud and client pieces must be used together in a solution. Documentation for each are in their related READMEs:
+
+- [@cargoplane/cloud](cloud/README.md)
+- [@cargoplane/client](client/README.md)
 
 ### Demo
 

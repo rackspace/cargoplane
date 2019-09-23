@@ -1,0 +1,46 @@
+{
+  "name": "@cargoplane/client",
+  "version": "0.0.1",
+  "description": "Web client library for publishing messages to and subscribing to to messages via AWS IoT.",
+  "keywords": [
+    "aws",
+    "iot",
+    "publish",
+    "pubsub",
+    "subscribe",
+    "typescript"
+  ],
+  "scripts": {
+    "build": "tsc && npm link",
+    "test": "echo 'No tests yet' #jest --runInBand --no-cache --verbose",
+    "test:watch": "jest --watch --runInBand",
+    "clean": "rm -r dist",
+    "clean:publish": "rm -r dist; npm run build && npm run test && npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onicagroup/cargoplane.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Onica Group",
+  "homepage": "https://github.com/onicagroup/cargoplane",
+  "contributors": [
+    "Adam Fanello <afanello@onica.com>",
+    "Sarodge Dechgan"
+  ],
+  "main": "dist/cargoplane-client.js",
+  "types": "dist/cargoplane-client.d.ts",
+  "devDependencies": {
+    "@types/node": "^8.10.10",
+    "aws-iot-device-sdk": "^2.2.1",
+    "jest": "^23.6.0",
+    "rxjs": "^6.3.3",
+    "ts-jest": "^23.10.2",
+    "ts-node": "^8.0.3",
+    "typescript": "^2.4.2"
+  },
+  "peerDependencies": {
+    "aws-iot-device-sdk": "2.x.x",
+    "rxjs": ">5.0.0"
+  }
+}

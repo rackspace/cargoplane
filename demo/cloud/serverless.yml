@@ -1,0 +1,69 @@
+# serverless.yml
+service:
+  name: mycargoplaneapp
+
+plugins:
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+  environment:
+    PUB_SUB_ROLE_NAME: ${self:provider.stage}-mycargoplaneapp-role
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - iot:DescribeEndpoint
+        - iot:Connect
+        - iot:Publish
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - 'sts:AssumeRole'
+      Resource:
+        Fn::GetAtt:
+          - IoTRole
+          - Arn
+
+functions:
+  getPubSubCredentials:
+    handler: src/handlers.getCredentials
+    events:
+      - http:
+          method: get
+          path: credentials
+          cors: true
+  publishIot:
+    handler: src/handlers.publish
+    events:
+      - http:
+          method: post
+          path: publish
+          cors: true
+resources:
+  Resources:
+    IoTRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:provider.environment.PUB_SUB_ROLE_NAME}
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: {'Fn::Join': [':', ["arn:aws:iam", "", {Ref: "AWS::AccountId"}, "root"]]}
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:provider.environment.PUB_SUB_ROLE_NAME}-policy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                Effect: Allow
+                Action:
+                  - iot:Connect
+                  - iot:Subscribe
+                  - iot:Publish
+                  - iot:Receive
+                Resource: "arn:aws:iot:${self:provider.region}:*:*"

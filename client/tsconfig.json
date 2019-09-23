@@ -1,0 +1,25 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "module": "es2015",
+    "moduleResolution": "node",
+    "baseUrl": "lib",
+    "rootDirs": [
+      "lib"
+    ],
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "dist",
+    "removeComments": false,
+    "strictNullChecks": true,
+    "target": "es2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "dom",
+      "es2015"
+    ]
+  }
+}

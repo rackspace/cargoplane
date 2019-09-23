@@ -1,0 +1,35 @@
+<div>
+  <form [formGroup]="chatForm" (ngSubmit)="onSubmit()"> 
+    <label>Publish:
+      <input formControlName="text" placeholder="message"/> 
+    </label>
+    <label>
+      via
+      <select formControlName="topic">
+        <option value="chattopic/mqtt">MQTT</option>
+        <option value="chattopic/lambda">AWS Lambda</option>
+      </select>
+      <button type="submit">Submit</button>
+    </label>
+  </form>
+  <p></p>
+  <div class="description">When sending a message via MQTT, the message will publish directly to MQTT from the browser to the topic <code>chattopic/mqtt</code>.</div>
+  <div class="description">When sending a message via AWS, the message will be posted to an AWS Lambda via API Gateway.  The Lambda will then publish the message to the topic <code>chattopic/lambda</code>.</div>
+
+  <table class="chatwindows">
+    <tbody>
+      <tr>
+        <td>
+          <h2>MQTT</h2>
+          <div class="description">This window is subscribing to the topic <code>chattopic/mqtt</code>.    </div>
+          <app-chat-window topic="chattopic/mqtt"></app-chat-window>
+        </td>
+        <td>
+          <h2>AWS Lambda</h2>
+          <div class="description">This window is subscribing to the topic <code>chattopic/lambda</code>.   </div>
+          <app-chat-window topic="chattopic/lambda"></app-chat-window>
+        </td>
+      </tr>
+    </tbody>
+  </table>  
+</div>

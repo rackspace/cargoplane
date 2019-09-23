@@ -1,0 +1,48 @@
+{
+  "name": "@cargoplane/cloud",
+  "version": "0.0.1",
+  "description": "AWS cloud-side library for publishing messages to and subscribing to to messages via AWS IoT.",
+  "keywords": [
+    "aws",
+    "iot",
+    "publish",
+    "pubsub",
+    "subscribe",
+    "typescript"
+  ],
+  "scripts": {
+    "build": "tsc && npm link",
+    "test": "echo 'No tests yet' #jest --runInBand --no-cache --verbose",
+    "test:watch": "jest --watch --runInBand",
+    "clean": "rm -r dist",
+    "clean:publish": "rm -r dist; npm run build && npm run test && npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onicagroup/cargoplane.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Onica Group",
+  "homepage": "https://github.com/onicagroup/cargoplane",
+  "contributors": [
+    "Adam Fanello <afanello@onica.com>",
+    "Sarodge Dechgan"
+  ],
+  "main": "dist/cargoplane-cloud.js",
+  "types": "dist/cargoplane-cloud.d.ts",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.27",
+    "@types/node": "^8.10.10",
+    "aws-sdk": "^2.479.0",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.2",
+    "ts-node": "^8.0.3",
+    "typescript": "^2.4.2"
+  },
+  "peerDependencies": {
+    "aws-sdk": "2.x.x"
+  },
+  "dependencies": {
+    "source-map-support": "^0.5.9"
+  }
+}

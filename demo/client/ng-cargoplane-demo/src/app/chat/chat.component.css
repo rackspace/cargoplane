@@ -1,0 +1,7 @@
+.chatwindows {
+    width: 100%;
+}
+
+.chatwindows td{
+    vertical-align: top;
+}
