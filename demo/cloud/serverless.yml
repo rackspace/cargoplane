@@ -28,14 +28,14 @@ provider:
           - Arn
 
 functions:
-  getPubSubCredentials:
+  getCargoplaneCredentials:
     handler: src/handlers.getCredentials
     events:
       - http:
           method: get
           path: credentials
           cors: true
-  publishIot:
+  publishCargoplane:
     handler: src/handlers.publish
     events:
       - http:
