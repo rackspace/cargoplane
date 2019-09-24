@@ -97,11 +97,11 @@ or to publish a message.
 
 #### createCredentials
 
-    async createCredentials(request: FlightCredentialRequest): Promise<FlightCredential>
+    async createCredentials(request: CargoplaneCredentialRequest): Promise<CargoplaneCredential>
 
 Example Usage:
 
-    let credRequest: FlightCredentialRequest = {
+    let credRequest: CargoplaneCredentialRequest = {
         roleName: "mycargoplaneapp-role-dev",
         pubTopics: [
             "chattopic/general"
@@ -111,7 +111,7 @@ Example Usage:
         ]
     }
 
-    let awsCredentials = await new CargoplaneCloud().createCredentials(credRequest);
+    let credentials = await new CargoplaneCloud().createCredentials(credRequest);
 
 
 #### publish
