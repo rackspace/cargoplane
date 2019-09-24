@@ -2,7 +2,7 @@
   "compileOnSave": true,
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "module": "es2015",
+    "module": "commonjs",
     "moduleResolution": "node",
     "baseUrl": "lib",
     "rootDirs": [
@@ -13,7 +13,7 @@
     "outDir": "dist",
     "removeComments": false,
     "strictNullChecks": true,
-    "target": "es2015",
+    "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
     ],
