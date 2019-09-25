@@ -5,22 +5,32 @@ import * as awsIot from 'aws-iot-device-sdk';
  * Approved credentials for use by this client instance.
  */
 export interface CargoplaneCredential {
-    iotEndpoint: string,
-    region: string,
-    accessKey: string,
-    secretKey: string,
-    sessionToken: string
+    iotEndpoint: string;
+    region: string;
+    accessKey: string;
+    secretKey: string;
+    sessionToken: string;
+    /** ISO-8601 date-time of when the credentials expire - normally one hour after issuing */
+    expiration: string;
+
 }
 
 /** Message queued for publishing */
 interface QueuedMessage {
-    topic: string,
-    message?: any
+    topic: string;
+    message?: any;
 }
 
 /**
  * Web browser-side API for Cargoplane.
  * Must use as a singleton.
+ *
+ * Credentials must be obtained via CargoplaneCloud#createCredentials() via code running
+ * in AWS. Note that the credentials include an expiration date-time.
+ * You must obtain new credentials and reconnect prior to expiration in order to remain
+ * connected. Subscriptions are automatically re-applied upon reconnect. The expiration
+ * period is normally one hour, but it is best to use this value rather than assume one
+ * hour.
  */
 export class CargoplaneClient {
 
@@ -39,7 +49,9 @@ export class CargoplaneClient {
     }
 
     /**
-     * Connect to cloud Cargoplane with given flight credentials.
+     * Connect to cloud Cargoplane with given credentials.
+     *
+     * @param credential as received by calling a CargoplaneCloud#createCredentials()
      */
     connect(credential: CargoplaneCredential): void {
         console.debug("Cargoplane connecting");
@@ -100,7 +112,7 @@ export class CargoplaneClient {
     }
 
     /**
-     * Disconnect all subscriptions (upon user logout)
+     * Disconnect and clear all subscriptions. (Ex: upon user logout)
      */
     disconnect(): void {
         this.typeSubjects.forEach(subject => {
@@ -116,7 +128,7 @@ export class CargoplaneClient {
 
     /**
      * Obtain an RxJs Observable of a topic.
-     * The function will automatically subscribe to the IoT topic if this is the first request to observe it.
+     * The call will automatically subscribe to the topic if this is the first request to observe it.
      *
      * @param topic
      * @returns Observable that will receive events when message are received on the type.
