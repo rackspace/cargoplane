@@ -10,16 +10,28 @@ export class ChatService {
     }
 
     this.cargoplane = new CargoplaneClient();
+    this._reconnect().then();
+  }
 
-    // Please path here
+  async _reconnect() {
+    // Get Credentials from cloud
     console.log("API_URL: " + process.env.REACT_APP_API_URL);
     let credentialsPath = process.env.REACT_APP_API_URL + "credentials";
 
     // get the credentials from the endpoint
-    Axios.get(credentialsPath).then(response => {
-      //   console.log(response);
-      this.cargoplane.connect(response.data);
-    });
+    const credential = (await Axios.get(credentialsPath)).data;
+
+    // Connect to Cargoplane
+    await this.cargoplane.connect(credential);
+
+    // Schedule next reconnect 60s before timeout
+    const now = Date.now();
+    const expire = Date.parse(credential.expiration);
+    const waitMs = expire - now - 60000;
+    if (waitMs > 0) {
+      console.log('Credential renewal in', waitMs / 1000, 'seconds');
+      setTimeout(() => this._reconnect(), waitMs);
+    }
   }
 
   /**
@@ -28,7 +40,7 @@ export class ChatService {
    * @returns Observable that will receive events when chat message are received.
    */
   observe(topic) {
-    console.log("subscribing");
+    console.log("subscribing to ", topic);
     return this.cargoplane.observe(topic);
   }
 

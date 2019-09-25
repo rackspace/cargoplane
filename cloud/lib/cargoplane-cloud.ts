@@ -9,29 +9,31 @@ const sts = new AWS.STS();
  */
 export interface CargoplaneCredentialRequest {
     /** AWS Region to use. If not given, AWS_REGION environment variable is used */
-    region?: string,
+    region?: string;
     /** Base IAM role name for the credentials */
-    roleName: string,
+    roleName: string;
     /**
      * Optional prefix to use on client name to avoid conflict
      * with other applications in the AWS account
      */
-    sessionNamePrefix?: string,
+    sessionNamePrefix?: string;
     /** Full topic names credentials are to grant publishing to */
-    pubTopics: string[],
+    pubTopics: string[];
     /** Full topic names credentials are to grant subscription to */
-    subTopics: string[]
+    subTopics: string[];
 }
 
 /**
  * Approved credentials for use by a client instance.
  */
 export interface CargoplaneCredential {
-    iotEndpoint: string,
-    region: string,
-    accessKey: string,
-    secretKey: string,
-    sessionToken: string
+    iotEndpoint: string;
+    region: string;
+    accessKey: string;
+    secretKey: string;
+    sessionToken: string;
+    /** ISO-8601 date-time of when the credentials expire - normally one hour after issuing */
+    expiration: string;
 }
 
 /**
@@ -67,7 +69,8 @@ export class CargoplaneCloud {
             region: awsRegion,
             accessKey: roleCredentials.AccessKeyId,
             secretKey: roleCredentials.SecretAccessKey,
-            sessionToken: roleCredentials.SessionToken
+            sessionToken: roleCredentials.SessionToken,
+            expiration: roleCredentials.Expiration.toISOString()
         };
     };
 

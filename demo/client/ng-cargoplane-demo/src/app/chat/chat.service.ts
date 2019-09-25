@@ -23,12 +23,25 @@ export class ChatService {
               private readonly cargoplane: CargoplaneClient) {
 
     console.log('ChatService.constructor');
+    this.reconnect().then();
+  }
 
+  private async reconnect() {
+    // Get Credentials from cloud
     const credentialsPath = environment.apiUrl + 'credentials';
-    this.http.get(credentialsPath).toPromise()
-      .then((credential: CargoplaneCredential) => {
-        this.cargoplane.connect(credential);
-      });
+    const credential = await this.http.get(credentialsPath).toPromise() as CargoplaneCredential;
+
+    // Connect to Cargoplane
+    await this.cargoplane.connect(credential);
+
+    // Schedule next reconnect 60s before timeout
+    const now = Date.now();
+    const expire = Date.parse(credential.expiration);
+    const waitMs = expire - now - 60000;
+    if (waitMs > 0) {
+      console.log('Credential renewal in', waitMs / 1000, 'seconds');
+      setTimeout(() => this.reconnect(), waitMs);
+    }
   }
 
   /**
