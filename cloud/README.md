@@ -27,8 +27,9 @@ role to build credentials.
 
 #### IAM Role
 
-A role is needed to serve as the starting point for creating credentials for clients.
-(The actual policy created for a client will be further limited by account, region, and topic.)
+A role is needed to serve as the starting point for creating credentials for clients. The credentials created
+from this role will give clients limited access to connect, subscribe, publish and receive messages via AWS IoT.
+The actual credentials created for a client will be further limited by account, region, and topic.
 
     IoTRole:
       Type: 'AWS::IAM::Role'
@@ -59,7 +60,7 @@ A role is needed to serve as the starting point for creating credentials for cli
                   - 'iot:Receive'
                 Resource: 'arn:aws:iot:us-east-1:*:*'
 
-You should of course replace the RoleName and PolicyName with appropriate names, best parameterized.
+You should of course replace the `RoleName` and `PolicyName` with appropriate names, best parameterized.
 Also, the final resource region needs to be changed if not `us-east-1` or to be parameterized.
 
 Example: [Cloud Demo Serverless Framework template](../demo/cloud/serverless.yml)
@@ -68,7 +69,8 @@ Example: [Cloud Demo Serverless Framework template](../demo/cloud/serverless.yml
 
 Example: [Cloud Demo Lambda handler](../demo/cloud/src/handlers.ts)
 
-The Lambda needs the following additional policies:
+The Lambda needs the following additional policies in order to create client credentials, and to
+publish to topics:
 
     - Effect: "Allow"
       Action:
