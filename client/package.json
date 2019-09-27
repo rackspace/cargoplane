@@ -1,7 +1,7 @@
 {
   "name": "@cargoplane/client",
-  "version": "0.0.3",
-  "description": "Web client library for publishing messages to and subscribing to to messages via AWS IoT.",
+  "version": "1.0.0",
+  "description": "Web client library for publishing messages to and subscribing to to messages via AWS.",
   "keywords": [
     "aws",
     "iot",

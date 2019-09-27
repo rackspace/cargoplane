@@ -1,7 +1,7 @@
 {
   "name": "@cargoplane/cloud",
-  "version": "0.0.2",
-  "description": "AWS cloud-side library for publishing messages to and subscribing to to messages via AWS IoT.",
+  "version": "1.0.0",
+  "description": "AWS cloud-side library to support pub/sub with @cargoplane/client.",
   "keywords": [
     "aws",
     "iot",
