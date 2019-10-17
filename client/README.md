@@ -2,9 +2,27 @@
 
 This is the client library part of Cargoplane.
 
-## Usage
+## Setup
 
-`npm i @cargoplane/client aws-iot-device-sdk rxjs`
+### Install
+
+`npm i @cargoplane/client aws-iot-device-sdk rxjs @angular-builders/custom-webpack`
+
+### Custom Webpack Config
+
+Add the file `./webpack-custom.config.ts` to the project's root folder with the following:
+
+```typescript
+module.exports = {
+    node: {
+        fs: 'empty',
+        tls: 'empty',
+        path: 'empty'
+    }
+};
+```
+
+## Usage
 
 ### connect 
 
