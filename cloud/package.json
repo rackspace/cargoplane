@@ -1,6 +1,6 @@
 {
   "name": "@cargoplane/cloud",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AWS cloud-side library to support pub/sub with @cargoplane/client.",
   "keywords": [
     "aws",
@@ -34,8 +34,6 @@
     "@types/aws-lambda": "^8.10.27",
     "@types/node": "^8.10.10",
     "aws-sdk": "^2.479.0",
-    "jest": "^23.6.0",
-    "ts-jest": "^23.10.2",
     "ts-node": "^8.0.3",
     "typescript": "^2.4.2"
   },
