@@ -142,10 +142,10 @@ export class CargoplaneCloud {
      * @param awsRegion aws region
      * @param accountId account ID
      */
-    private createClientPolicy(pubTopics: string[] | undefined,
-                               subTopics: string[] | undefined,
+    private createClientPolicy(pubTopics: string[],
+                               subTopics: string[],
                                awsRegion: string,
-                               accountId: string) {
+                               accountId: string): any {
         let subscribeResources: string[] = [];
         let receiveResources: string[] = [];
         if (!!subTopics) {
@@ -158,31 +158,42 @@ export class CargoplaneCloud {
             publishResources = pubTopics.map(pubTopic => `arn:aws:iot:${awsRegion}:${accountId}:topic/${pubTopic}*`);
         }
 
-        return {
+        const policy: any = {
             Version: '2012-10-17',
             Statement: [
                 {
                     Effect: 'Allow',
                     Action: ['iot:Connect'],
                     Resource: `arn:aws:iot:${awsRegion}:${accountId}:client/*`
-                },
-                {
-                    Effect: 'Allow',
-                    Action: ['iot:Subscribe'],
-                    Resource: subscribeResources
-                },
-                {
-                    Effect: 'Allow',
-                    Action: ['iot:Receive'],
-                    Resource: receiveResources
-                },
-                {
-                    Effect: 'Allow',
-                    Action: ['iot:Publish'],
-                    Resource: publishResources
                 }
             ]
         };
+
+        if (subscribeResources.length > 0) {
+            policy.Statement.push({
+                Effect: 'Allow',
+                Action: ['iot:Subscribe'],
+                Resource: subscribeResources
+            });
+        }
+
+        if (receiveResources.length > 0) {
+            policy.Statement.push({
+                Effect: 'Allow',
+                Action: ['iot:Receive'],
+                Resource: receiveResources
+            });
+        }
+
+        if (publishResources.length > 0) {
+            policy.Statement.push({
+                Effect: 'Allow',
+                Action: ['iot:Publish'],
+                Resource: publishResources
+            });
+        }
+
+        return policy;
     }
 
     /**
