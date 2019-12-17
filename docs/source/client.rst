@@ -1,5 +1,5 @@
-Cargoplane Client
-=================
+Client
+======
 
 Cargoplane consists of a *cloud* package and a *client* package, which must be used together in a solution.
 
@@ -16,7 +16,7 @@ Install with Angular
 If integrating with Angular, some changes are needed to make the aws-iot package, which is intended for a Node.js
 environment, to work in a browser.
 
-``npm i @angular-builders/custom-webpack``
+``npm i @angular-builders/custom-webpack --save-dev``
 
 Add the file ``./webpack-custom.config.ts`` to the project's root folder with the following::
 
@@ -37,7 +37,7 @@ CargoplaneClient class
 The ``CargeplaneClient`` client is your API to integrate with Cargoplane.
 It must be used as a singleton. (If you have dependency injection, use that.)
 
-Please see the `demos <demo>`_ for examples to follow.
+Please see the :doc:`demos <demo>` for examples to follow.
 
 connect
 ^^^^^^^
