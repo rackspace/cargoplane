@@ -1,5 +1,5 @@
-Cargoplane - Cloud
-==================
+Cloud
+=====
 
 Cargoplane consists of a *cloud* package and a *client* package, which must be used together in a solution.
 

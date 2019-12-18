@@ -30,7 +30,7 @@ Example Uses
 
 Chat
   The classic example for this is a chat ability between web site visitors and company support.
-  In fact, a simple version of this serves as the `demo <demo>`_.
+  In fact, a simple version of this serves as the :doc:`demo <demo>`.
 
 Push notifications
   Web app users can be notified of events that have occurred in the cloud.
