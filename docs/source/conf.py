@@ -25,13 +25,13 @@ import subprocess
 # -- Project information -----------------------------------------------------
 
 project = u'cargoplane'
-copyright = u'2019, Onica Group'
+copyright = u'2019-2020, Onica Group'
 author = u'Onica Group'
 
 # The short X.Y version
 version = u''
 # The full version, including alpha/beta/rc tags
-release = u'1.0.0'
+release = u'1.1.0'
 
 
 # -- General configuration ---------------------------------------------------

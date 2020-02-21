@@ -44,15 +44,29 @@ connect
 
 Connects/reconnects to Cargoplane Cloud with the given credentials.
 
-``connect(credential: CargoplaneCredential): void``
+``connect(credential: CargoplaneCredential, emitEventMsBeforeExpiration?: number): Observable<Event>``
 
 The ``credential`` must be retrieved from the companion Lambda in the cloud package calling
 ``CargoplaneCloud#createCredentials``.
 
-The ``expiration`` field in ``CargoplaneCredential`` provides the expiration ISO date-time of the credentials.
-You must obtain new credentials and reconnect prior to expiration in order to remain connected. Subscriptions
-are automatically re-applied upon reconnect. The expiration period is normally one hour, but it is best to use
-this value rather than assume one hour.
+``connect`` will return a stream of `Events <https://developer.mozilla.org/en-US/docs/Web/Events>`_
+about the connection. Check the Event ``type`` field for what happened.
+Unless otherwise stated, Cargoplane will log these events and manage them automatically.
+
+* ``type === 'connected'``: Connection has completed.
+* ``type === 'disconnected'``: Connection has been dropped.
+* ``type === 'offline'``: Network is offline.
+* ``type === 'expiring'``: The current credentials are expiring (or has already).
+  Use this to trigger your application to obtain new credentials to call ``connect`` with again.
+  Subscriptions are automatically re-applied upon reconnect.
+  You can control how early the expiration warning comes by optionally passing in a value
+  for ``emitEventMsBeforeExpiration``. The default is one minute.
+* ``type === 'clock-resume'``: If the computer sleeps or the browser tab is suspended, this will be
+  emitted when processing resumes. *Messages may have been lost while suspended* - you may need to
+  take action to account for this. If the credentials expired during the suspension, a separate
+  ``expiring`` event will follow this.
+* ``type === 'error'``: There was an error with the connection. (Cargoplane will try to reconnect if needed.)
+
 
 disconnect
 ^^^^^^^^^^

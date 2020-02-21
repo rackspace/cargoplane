@@ -22,16 +22,13 @@ export class ChatService {
     const credential = (await Axios.get(credentialsPath)).data;
 
     // Connect to Cargoplane
-    await this.cargoplane.connect(credential);
-
-    // Schedule next reconnect 60s before timeout
-    const now = Date.now();
-    const expire = Date.parse(credential.expiration);
-    const waitMs = expire - now - 60000;
-    if (waitMs > 0) {
-      console.log('Credential renewal in', waitMs / 1000, 'seconds');
-      setTimeout(() => this._reconnect(), waitMs);
-    }
+    this.cargoplane.connect(credential)
+        .subscribe(event => {
+          console.log('Event from cargoplane:', event.type);
+          if (event.type === 'expiring') {
+            this._reconnect();
+          }
+        });
   }
 
   /**

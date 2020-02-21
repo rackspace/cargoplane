@@ -12,13 +12,57 @@ export interface CargoplaneCredential {
     sessionToken: string;
     /** ISO-8601 date-time of when the credentials expire - normally one hour after issuing */
     expiration: string;
-
 }
 
 /** Message queued for publishing */
 interface QueuedMessage {
     topic: string;
     message?: any;
+}
+
+const MillisecondsInMinute = 60000;
+
+/**
+ * Specialized version of setTimer():
+ * - Emits events
+ * - Checks actual wall time, not just clock ticks
+ * - Detects discrepancy which indicates the CPU had been suspended.
+ */
+class ClockTimer {
+    private timer?: NodeJS.Timer;
+    private event$?: Subject<Event>;
+    private expiringTime: number;
+    private lastMinuteTime: number;
+
+    /**
+     * Set timer
+     * @param expiringTime emit 'expiring' event around this time: milliseconds since epoch
+     * @param outputEvents$ stream to emit to
+     */
+    set(expiringTime: number, outputEvents$: Subject<Event>) {
+        this.event$ = outputEvents$;
+        this.expiringTime = expiringTime;
+        this.lastMinuteTime = Date.now();
+        this.timer = setInterval(() => this.checkClock(), MillisecondsInMinute);
+    }
+
+    /** Clear/stop timer */
+    clear() {
+        this.timer && clearTimeout(this.timer);
+        this.timer = undefined;
+        this.event$ = undefined;
+    }
+
+    private checkClock() {
+        const now = Date.now();
+        if ((now - this.lastMinuteTime) > (2*MillisecondsInMinute)) {
+            this.event$ && this.event$.next(new Event('clock-resume'));
+        }
+        if (now >= this.expiringTime) {
+            this.event$ && this.event$.next(new Event('expiring'));
+        }
+        this.lastMinuteTime = now;
+    }
 }
 
 /**
@@ -40,90 +84,58 @@ export class CargoplaneClient {
     private client?: any;
     private clientOnline = false;
     private publishQueue: QueuedMessage[] = [];
+    private connectionEvent$?: Subject<Event>;
+    private clock = new ClockTimer();
 
     /**
      * Is the service currently connected to the cloud?
      */
     isOnline(): boolean {
-        return this.clientOnline;
+        return this.client && this.clientOnline;
     }
 
     /**
      * Connect to cloud Cargoplane with given credentials.
      *
      * @param credential as received by calling a CargoplaneCloud#createCredentials()
+     * @param emitEventMsBeforeExpiration how many milliseconds before credential#expiration
+     *          shall the return observable emit an Event of type "expiring"?
+     * @return observable of events about the connection. See documentation for details.
      */
-    connect(credential: CargoplaneCredential): void {
-        console.debug("Cargoplane connecting");
-        if (this.client) {
-            this.client.end();
-        }
+    connect(credential: CargoplaneCredential,
+            emitEventMsBeforeExpiration = MillisecondsInMinute,
+    ): Observable<Event> {
+        this.cleanupConnection();
 
         if (!credential.iotEndpoint) {
             console.error("No IoT endpoint defined. Cargoplane disabled");
-            return;
+            const error = new Subject<Event>();
+            error.next(new Event('error'));
+            error.complete();
+            return error;
         }
 
-        const params = {
-            region: credential.region,
-            protocol: 'wss',
-            accessKeyId: credential.accessKey,
-            secretKey: credential.secretKey,
-            sessionToken: credential.sessionToken,
-            port: 443,
-            host: credential.iotEndpoint,
-            autoResubscribe: false
-        };
-        console.debug("Cargoplane IoT Device ", params);
-        this.client = awsIot.device(params);
+        this.setupClient(credential);
+        this.connectionEvent$ = new Subject<Event>();
 
-        this.client.on('connect', () => {
-            console.debug("Cargoplane connected");
-            this.clientOnline = true;
-            this.resubscribeToAllTopics();
-            this.publishQueuedMessages();
-        });
+        // Set expiration clock
+        const credentialExpirationTime = Date.parse(credential.expiration) || MillisecondsInMinute * 59;
+        console.debug('Cargoplane credential expires in',
+                      Math.round((credentialExpirationTime - Date.now()) / MillisecondsInMinute),
+                      'minutes');
+        this.clock.set(credentialExpirationTime - emitEventMsBeforeExpiration, this.connectionEvent$);
 
-        this.client.on('message', (topic: string, message: any) => {
-            console.debug("Cargoplane received topic", topic, "with content:", message);
-            const subject = this.typeSubjects.get(topic);
-            if (subject) {
-                subject.next(message && message.length ? JSON.parse(message) : '');
-            }
-        });
-
-        this.client.on('error', (err) => {
-            console.error("Cargoplane error: ", err);
-        });
-
-        this.client.on('reconnect', () => {
-            console.info("Cargoplane attempting reconnect");
-        });
-
-        this.client.on('offline', () => {
-            console.debug("Cargoplane offline");
-            this.clientOnline = false;
-        });
-
-        this.client.on('close', () => {
-            console.debug("Cargoplane closed");
-            this.clientOnline = false;
-        });
+        return this.connectionEvent$.asObservable();
     }
 
     /**
      * Disconnect and clear all subscriptions. (Ex: upon user logout)
      */
     disconnect(): void {
-        this.typeSubjects.forEach(subject => {
-            subject.complete();
-        });
+        this.typeSubjects.forEach(subject => subject.complete());
         this.typeSubjects.clear();
-
-        if (this.client) {
-            this.client.end();
-            this.client = undefined;
-        }
+        this.publishQueue = [];
+        this.cleanupConnection();
     }
 
     /**
@@ -183,5 +195,75 @@ export class CargoplaneClient {
         });
 
         this.publishQueue.length = 0;
+    }
+
+    /** Helper for connecting as an IoT Device */
+    private setupClient(credential: CargoplaneCredential): void {
+        const params = {
+            region: credential.region,
+            protocol: 'wss',
+            accessKeyId: credential.accessKey,
+            secretKey: credential.secretKey,
+            sessionToken: credential.sessionToken,
+            port: 443,
+            host: credential.iotEndpoint,
+            autoResubscribe: false
+        };
+        console.debug("Cargoplane connecting as IoT Device ", params);
+        this.client = awsIot.device(params);
+
+        this.client.on('connect', () => {
+            console.debug("Cargoplane connected");
+            this.clientOnline = true;
+            this.connectionEvent$ && this.connectionEvent$.next(new Event('connected'));
+            this.resubscribeToAllTopics();
+            this.publishQueuedMessages();
+        });
+
+        this.client.on('message', (topic: string, message: any) => {
+            try {
+                const payload = message && message.length ? JSON.parse(message) : '';
+                console.debug("Cargoplane received topic", topic, "with content:", payload);
+                const subject = this.typeSubjects.get(topic);
+                if (subject) {
+                    subject.next(payload);
+                }
+            }
+            catch (ex) {
+                console.warn("Cargoplane received topic", topic, "with unparsable content:", message);
+            }
+        });
+
+        this.client.on('error', (event: Event) => {
+            console.error("Cargoplane error: ", event);
+            this.connectionEvent$ && event && this.connectionEvent$.next(event);
+        });
+
+        this.client.on('reconnect', () => {
+            console.info("Cargoplane attempting reconnect");
+        });
+
+        this.client.on('offline', () => {
+            console.debug("Cargoplane offline");
+            this.clientOnline = false;
+            this.connectionEvent$ && this.connectionEvent$.next(new Event('offline'));
+        });
+
+        this.client.on('close', () => {
+            console.debug("Cargoplane closed");
+            this.clientOnline = false;
+            this.connectionEvent$ && this.connectionEvent$.next(new Event('disconnected'));
+        });
+    }
+
+    /** Helper for cleaning up connection-based content */
+    private cleanupConnection(): void {
+        this.clock.clear();
+        this.connectionEvent$ && this.connectionEvent$.complete();
+        this.connectionEvent$ = undefined;
+
+        this.client && this.client.end();
+        this.client = undefined;
+        this.clientOnline = false;
     }
 }
