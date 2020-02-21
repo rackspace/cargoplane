@@ -28,6 +28,17 @@ Add the file ``./webpack-custom.config.ts`` to the project's root folder with th
     }
   };
 
+Similarly, if you use the default Karma unit test running, add the following in ``karma.conf.js`` as another property
+passed to ``config.set``::
+
+    webpack: {
+      node: {
+        fs: 'empty',
+        tls: 'empty',
+        path: 'empty'
+      }
+    }
+
 See also `AWS Javascript SDK with Angular <https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/#With_Angular>`_
 for other possible changes that may be needed.
 
