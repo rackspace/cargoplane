@@ -29,7 +29,7 @@ const MillisecondsInMinute = 60000;
  * - Detects discrepancy which indicates the CPU had been suspended.
  */
 class ClockTimer {
-    private timer?: NodeJS.Timer;
+    private timer?: any;
     private event$?: Subject<Event>;
     private expiringTime: number;
     private lastMinuteTime: number;
