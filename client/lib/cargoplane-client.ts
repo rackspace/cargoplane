@@ -66,6 +66,39 @@ class ClockTimer {
 }
 
 /**
+ * Helper to decode JSON messages from IoT Core.
+ * Sometimes the message is a string, sometimes its a Uint8Array.
+ * Sometimes the runtime environment has TextDecoder, sometimes it doesn't.
+ */
+class MessageParser {
+    private decoder = !!TextDecoder ? new TextDecoder() : null;
+
+    /**
+     * Parse message into an object.
+     * @throws SyntaxError if message is not valid JSON
+     */
+    parse(message: string | Uint8Array | undefined): any {
+        if (typeof message === 'string') {
+            return JSON.parse(message);
+        }
+        else if (message instanceof Uint8Array) {
+            const str = this.decoder ? this.decoder.decode(message) : this.shimDecoder(message);
+            return JSON.parse(str);
+        }
+        else {
+            return '';
+        }
+    }
+
+    /** Simple shim for old browsers that don't support TextDecoder */
+    shimDecoder(array: Uint8Array): string {
+        let str = '';
+        array.forEach(byte => str += String.fromCharCode(byte));
+        return str;
+    }
+}
+
+/**
  * Web browser-side API for Cargoplane.
  * Must use as a singleton.
  *
@@ -86,6 +119,7 @@ export class CargoplaneClient {
     private publishQueue: QueuedMessage[] = [];
     private connectionEvent$?: Subject<Event>;
     private clock = new ClockTimer();
+    private messageParser = new MessageParser();
 
     /**
      * Is the service currently connected to the cloud?
@@ -222,7 +256,7 @@ export class CargoplaneClient {
 
         this.client.on('message', (topic: string, message: any) => {
             try {
-                const payload = message && message.length ? JSON.parse(message) : '';
+                const payload = this.messageParser.parse(message);
                 console.debug("Cargoplane received topic", topic, "with content:", payload);
                 const subject = this.typeSubjects.get(topic);
                 if (subject) {
