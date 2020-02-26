@@ -1,6 +1,6 @@
 {
   "name": "@cargoplane/client",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Web client library for publishing messages to and subscribing to to messages via AWS.",
   "keywords": [
     "aws",
