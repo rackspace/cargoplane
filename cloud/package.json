@@ -1,6 +1,6 @@
 {
   "name": "@cargoplane/cloud",
-  "version": "1.0.2",
+  "version": "2.0.0-alpha.3",
   "description": "AWS cloud-side library to support pub/sub with @cargoplane/client.",
   "keywords": [
     "aws",
@@ -10,37 +10,57 @@
     "subscribe",
     "typescript"
   ],
-  "scripts": {
-    "build": "tsc && npm link",
-    "test": "echo 'No tests yet' #jest --runInBand --no-cache --verbose",
-    "test:watch": "jest --watch --runInBand",
-    "clean": "rm -r dist",
-    "clean:publish": "rm -r dist; npm run build && npm run test && npm publish --access public"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/onicagroup/cargoplane.git"
+    "url": "https://github.com/rackspace/cargoplane.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rackspace/cargoplane/issues"
   },
   "license": "Apache-2.0",
-  "author": "Onica Group",
-  "homepage": "https://github.com/onicagroup/cargoplane",
+  "author": "Rackspace Technology",
+  "homepage": "https://github.com/rackspace/cargoplane",
   "contributors": [
-    "Adam Fanello <afanello@onica.com>",
-    "Sarodge Dechgan"
+    "Adam Fanello <adam.fanello@rackspace.com>",
+    "Sarodge Dechgan <sarodge.dechgan@rackspace.com>"
   ],
-  "main": "dist/cargoplane-cloud.js",
-  "types": "dist/cargoplane-cloud.d.ts",
+  "engines": {
+    "node": ">=20.11.0 <21",
+    "npm": ">=10.3.0 <11"
+  },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.27",
-    "@types/node": "^8.10.10",
-    "aws-sdk": "^2.479.0",
-    "ts-node": "^8.0.3",
-    "typescript": "^2.4.2"
+    "@aws-sdk/client-iot": "^3.758.0",
+    "@aws-sdk/client-iot-data-plane": "^3.758.0",
+    "@aws-sdk/client-sts": "^3.734.0",
+    "@eslint/js": "^9.18.0",
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^20.17.24",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
+    "typescript": "5.5.x",
+    "typescript-eslint": "^8.21.0"
   },
   "peerDependencies": {
-    "aws-sdk": "2.x.x"
+    "@aws-sdk/client-iot": "3.x.x",
+    "@aws-sdk/client-iot-data-plane": "3.x.x",
+    "@aws-sdk/client-sts": "3.x.x"
   },
-  "dependencies": {
-    "source-map-support": "^0.5.9"
+  "type": "module",
+  "main": "dist/cargoplane-cloud.cjs",
+  "module": "dist/cargoplane-cloud.mjs",
+  "types": "dist/cargoplane-cloud.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "analyze": "npm run build && npm run lint && npm run prettier",
+    "clean": "rm -r dist node_modules",
+    "build": "tsup && npm link",
+    "dev": "tsup --watch",
+    "lint": "eslint lib",
+    "prettier": "prettier --check lib"
   }
 }

@@ -33,12 +33,8 @@ export const getCredentials = async () => {
     return response;
 };
 
-export const publish = async (event) => {
-    if (!PUB_SUB_ROLE_NAME) {
-        throw new Error("PUB_SUB_ROLE_NAME doesn't exist");
-    }
-
-    let body = JSON.parse(event["body"]);
+export const publish = async (event: {body:string}) => {
+    let body = JSON.parse(event.body);
 
     let topic = body.topic;
     let message = {

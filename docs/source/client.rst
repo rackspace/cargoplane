@@ -66,7 +66,6 @@ Unless otherwise stated, Cargoplane will log these events and manage them automa
 
 * ``type === 'connected'``: Connection has completed.
 * ``type === 'disconnected'``: Connection has been dropped.
-* ``type === 'offline'``: Network is offline.
 * ``type === 'expiring'``: The current credentials are expiring (or has already).
   Use this to trigger your application to obtain new credentials to call ``connect`` with again.
   Subscriptions are automatically re-applied upon reconnect.
@@ -104,6 +103,13 @@ Obtain an RxJs Observable of a topic.
 This call will automatically subscribe to the topic if this is the first request to observe it.
 
 ``observe(topic: string): Observable<any>``
+
+unobserve
+^^^^^^^
+
+Complete all RxJs Observables of a topic and unsubscribe to the topic.
+
+``unobserve(topic: string): void``
 
 publish
 ^^^^^^^
