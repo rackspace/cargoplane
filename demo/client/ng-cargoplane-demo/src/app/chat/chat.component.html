@@ -1,35 +1,41 @@
 <div>
-  <form [formGroup]="chatForm" (ngSubmit)="onSubmit()"> 
+  <form (ngSubmit)="onSubmit()" #chatForm="ngForm">
     <label>Publish:
-      <input formControlName="text" placeholder="message"/> 
+      <input id="text" type="text" name="text" placeholder="message" required [(ngModel)]="text"/>
     </label>
     <label>
       via
-      <select formControlName="topic">
+      <select id="topic" name="topic" [(ngModel)]="topic">
         <option value="chattopic/mqtt">MQTT</option>
         <option value="chattopic/lambda">AWS Lambda</option>
       </select>
-      <button type="submit">Submit</button>
+      <p>
+        <button type="submit" [disabled]="!chatForm.form.valid">Submit</button>
+      </p>
     </label>
   </form>
-  <p></p>
-  <div class="description">When sending a message via MQTT, the message will publish directly to MQTT from the browser to the topic <code>chattopic/mqtt</code>.</div>
-  <div class="description">When sending a message via AWS, the message will be posted to an AWS Lambda via API Gateway.  The Lambda will then publish the message to the topic <code>chattopic/lambda</code>.</div>
-
+  <p>
+    When sending a message via <b>MQTT</b>, the message will publish directly to MQTT from the browser
+    to the topic <code>chattopic/mqtt</code>.
+  </p>
+  <p>
+    When sending a message via <b>AWS Lambda</b>, the message will be posted to a Lambda via API Gateway.
+    The Lambda will then publish the message to the topic <code>chattopic/lambda</code>.
+  </p>
   <table class="chatwindows">
     <tbody>
-      <tr>
-        <td>
-          <h2>MQTT</h2>
-          <div class="description">This window is subscribing to the topic <code>chattopic/mqtt</code>.    </div>
-          <app-chat-window topic="chattopic/mqtt"></app-chat-window>
-        </td>
-        <td>
-          <h2>AWS Lambda</h2>
-          <div class="description">This window is subscribing to the topic <code>chattopic/lambda</code>.   </div>
-          <app-chat-window topic="chattopic/lambda"></app-chat-window>
-        </td>
-      </tr>
+    <tr>
+      <td>
+        <h2>MQTT</h2>
+        <p>This panel is subscribed to the topic <code>chattopic/mqtt</code>.</p>
+        <app-chat-window topic="chattopic/mqtt"></app-chat-window>
+      </td>
+      <td>
+        <h2>AWS Lambda</h2>
+        <p >This panel is subscribed to the topic <code>chattopic/lambda</code>.</p>
+        <app-chat-window topic="chattopic/lambda"></app-chat-window>
+      </td>
+    </tr>
     </tbody>
-  </table>  
+  </table>
 </div>

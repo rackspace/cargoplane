@@ -1,26 +1,23 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
+import {Injectable} from '@angular/core';
 import {CargoplaneClient, CargoplaneCredential} from '@cargoplane/client';
+import {lastValueFrom, Observable} from 'rxjs';
+import {environment} from '../environment';
 import {ChatMessage} from '../model/chat';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
+  /* Note: May only be one instance of this in the entire app! */
+  private readonly cargoplane = new CargoplaneClient();
 
   /**
    * Construct this service.
    *
    * @param http HTTP call needed to call Lambdas
-   * @param cargoplane inject CargoplaneClient here.
-   *    Since ChatService contains all use of it though, we could easily have
-   *    not made CargoplaneClient be a service in app.module.ts, and instead
-   *    simply contained an instance in this class.
    */
-  constructor(private readonly http: HttpClient,
-              private readonly cargoplane: CargoplaneClient) {
+  constructor(private readonly http: HttpClient) {
 
     console.log('ChatService.constructor');
     this.reconnect().then();
@@ -46,9 +43,9 @@ export class ChatService {
    * @param topic topic to subscribe
    * @returns Observable that will receive events when chat message are received.
    */
-  observe(topic): Observable<ChatMessage> {
+  observe(topic: string): Observable<ChatMessage> {
     console.log('subscribing');
-    return (this.cargoplane.observe(topic) as any) as Observable<ChatMessage>;
+    return this.cargoplane.observe<ChatMessage>(topic);
   }
 
   /**
@@ -68,7 +65,7 @@ export class ChatService {
         topic,
         text: message
       };
-      this.http.post(publishUrl, body).toPromise()
+      lastValueFrom(this.http.post(publishUrl, body))
         .then(() => {
           console.log('success');
         });

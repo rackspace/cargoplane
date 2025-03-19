@@ -1,37 +1,39 @@
 # Example Angular App using Cargoplane
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.4.
 
 To use, first deploy the `/demo/cloud` project and copy the resulting API Gateway endpoint
 to `src/environments/environment.ts`.
 
 ## Interesting points of integration
 
-- `src/app/app.module.ts` adds `CargoplaneClient` as an injectable provider.
 - `src/app/chat/chat.service.ts` uses `CargoplaneClient`.
 - `src/app/chat/chat-window.component.ts` subscribes (and unsubscribes) to a topic.
 - `src/app/chat/chat.component.ts` publishes messages to one of two topics.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+To start a local development server, run:
 
-## Code scaffolding
+```bash
+ng serve
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will
+automatically reload whenever you modify any of the source files.
 
-## Build
+## Building
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+To build the project run:
 
-## Running unit tests
+```bash
+ng build
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build
+optimizes your application for performance and speed.
 
-## Running end-to-end tests
+## Additional Resources
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+For more information on using the Angular CLI, including detailed command references, visit
+the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
