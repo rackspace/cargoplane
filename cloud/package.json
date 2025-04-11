@@ -1,6 +1,6 @@
 {
   "name": "@cargoplane/cloud",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0",
   "description": "AWS cloud-side library to support pub/sub with @cargoplane/client.",
   "keywords": [
     "aws",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rackspace/cargoplane.git"
+    "url": "git+https://github.com/rackspace/cargoplane.git"
   },
   "bugs": {
     "url": "https://github.com/rackspace/cargoplane/issues"
