@@ -1,53 +1,60 @@
 # serverless.yml
-service:
-  name: mycargoplaneapp
+service: mycargoplaneapp
 
 plugins:
   - serverless-plugin-typescript
 
+custom:
+  pubSubRoleName: ${sls:stage}-mycargoplaneapp-role
+
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs22.x
+  region: ${env:AWS_REGION, "us-west-2"}
 
   environment:
-    PUB_SUB_ROLE_NAME: ${self:provider.stage}-mycargoplaneapp-role
+    PUB_SUB_ROLE_NAME: ${self:custom.pubSubRoleName}
 
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - iot:DescribeEndpoint
-        - iot:Connect
-        - iot:Publish
-      Resource: "*"
-    - Effect: "Allow"
-      Action:
-        - 'sts:AssumeRole'
-      Resource:
-        Fn::GetAtt:
-          - IoTRole
-          - Arn
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - iot:DescribeEndpoint
+            - iot:Connect
+            - iot:Publish
+          Resource: "*"
+        - Effect: "Allow"
+          Action:
+            - 'sts:AssumeRole'
+          Resource:
+            Fn::GetAtt:
+              - IoTRole
+              - Arn
+
+  httpApi:
+    cors: true
 
 functions:
   getCargoplaneCredentials:
     handler: src/handlers.getCredentials
     events:
-      - http:
-          method: get
-          path: credentials
-          cors: true
+      - httpApi:
+          method: GET
+          path: /credentials
   publishCargoplane:
     handler: src/handlers.publish
     events:
-      - http:
-          method: post
-          path: publish
-          cors: true
+      - httpApi:
+          method: POST
+          path: /publish
+
 resources:
   Resources:
     IoTRole:
       Type: AWS::IAM::Role
       Properties:
-        RoleName: ${self:provider.environment.PUB_SUB_ROLE_NAME}
+        RoleName: ${self:custom.pubSubRoleName}
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -56,7 +63,7 @@ resources:
                 AWS: {'Fn::Join': [':', ["arn:aws:iam", "", {Ref: "AWS::AccountId"}, "root"]]}
               Action: sts:AssumeRole
         Policies:
-          - PolicyName: ${self:provider.environment.PUB_SUB_ROLE_NAME}-policy
+          - PolicyName: ${self:custom.pubSubRoleName}-policy
             PolicyDocument:
               Version: '2012-10-17'
               Statement:
@@ -66,4 +73,4 @@ resources:
                   - iot:Subscribe
                   - iot:Publish
                   - iot:Receive
-                Resource: "arn:aws:iot:${self:provider.region}:*:*"
+                Resource: "arn:aws:iot:${aws:region}:*:*"

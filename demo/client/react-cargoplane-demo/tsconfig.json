@@ -1,5 +1,6 @@
 {
-  "include": ["lib"],
+  "include": ["src"],
+  "compileOnSave": true,
   "compilerOptions": {
     "module": "es2020",
     "target": "es2020",
@@ -9,10 +10,9 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "outDir": "dist",
-    "rootDir": "lib",
+    "rootDir": "src",
     "paths": {
       "aws-iot-device-sdk-v2": ["./node_modules/aws-iot-device-sdk-v2/dist/browser"]
     }
-  },
+  }
 }

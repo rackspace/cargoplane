@@ -52,7 +52,7 @@ class Chat extends React.Component {
                 </form>
                 <p></p>
                 <div className="description">When sending a message via MQTT, the message will publish directly to MQTT from the browser to the topic <code>chattopic/mqtt</code>.</div>
-                <div className="description">When sending a message via AWS, the message will be posted to an AWS Lambda via API Gateway.  The Lambda will then publish the message to the topic <code>chattopic/lambda</code>.</div>
+                <div className="description">When sending a message via AWS Lambda, the message will be posted to an AWS Lambda via API Gateway.  The Lambda will then publish the message to the topic <code>chattopic/lambda</code>.</div>
 
                 <table className="chatwindows">
                     <tbody>

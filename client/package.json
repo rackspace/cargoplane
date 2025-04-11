@@ -1,7 +1,7 @@
 {
   "name": "@cargoplane/client",
-  "version": "1.1.0",
-  "description": "Web client library for publishing messages to and subscribing to to messages via AWS.",
+  "version": "2.0.0",
+  "description": "Web client library for publishing messages to and subscribing to messages via AWS.",
   "keywords": [
     "aws",
     "iot",
@@ -10,35 +10,55 @@
     "subscribe",
     "typescript"
   ],
-  "scripts": {
-    "build": "tsc && npm link",
-    "test": "echo 'No tests yet' #jest --runInBand --no-cache --verbose",
-    "test:watch": "jest --watch --runInBand",
-    "clean": "rm -r dist",
-    "clean:publish": "rm -r dist; npm run build && npm run test && npm publish --access public"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/onicagroup/cargoplane.git"
+    "url": "git+https://github.com/rackspace/cargoplane.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rackspace/cargoplane/issues"
   },
   "license": "Apache-2.0",
-  "author": "Onica Group",
-  "homepage": "https://github.com/onicagroup/cargoplane",
+  "author": "Rackspace Technology",
+  "homepage": "https://github.com/rackspace/cargoplane",
   "contributors": [
-    "Adam Fanello <afanello@onica.com>",
-    "Sarodge Dechgan"
+    "Adam Fanello <adam.fanello@rackspace.com>",
+    "Sarodge Dechgan <sarodge.dechgan@rackspace.com>"
   ],
-  "main": "dist/cargoplane-client.js",
-  "types": "dist/cargoplane-client.d.ts",
+  "engines": {
+    "node": ">=20.11.0 <21",
+    "npm": ">=10.3.0 <11"
+  },
   "devDependencies": {
-    "@types/node": "^8.10.10",
-    "aws-iot-device-sdk": "^2.2.1",
-    "rxjs": "^5.5.12",
-    "ts-node": "^8.0.3",
-    "typescript": "^2.4.2"
+    "@eslint/js": "^9.18.0",
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^20.17.24",
+    "aws-iot-device-sdk-v2": "^1.21.3",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "rxjs": "^7.8.2",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
+    "typescript": "5.5.x",
+    "typescript-eslint": "^8.21.0"
   },
   "peerDependencies": {
-    "aws-iot-device-sdk": "2.x.x",
-    "rxjs": ">5.0.0"
+    "aws-iot-device-sdk-v2": "1.x.x",
+    "rxjs": ">7.0.0"
+  },
+  "type": "module",
+  "main": "dist/cargoplane-client.cjs",
+  "module": "dist/cargoplane-client.mjs",
+  "types": "dist/cargoplane-client.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "analyze": "npm run build && npm run lint && npm run prettier",
+    "clean": "rm -r dist node_modules",
+    "build": "tsup && npm link",
+    "dev": "tsup --watch",
+    "lint": "eslint lib",
+    "prettier": "prettier --check lib"
   }
 }

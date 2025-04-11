@@ -1,16 +1,23 @@
 {
   "name": "mycargoplaneapp",
-  "scripts": {},
+  "scripts": {
+    "deploy": "sls deploy",
+    "package": "sls package",
+    "remove": "sls remove",
+    "clean": "rm -r .build .serverless node_modules"
+  },
   "dependencies": {
-    "@cargoplane/cloud": "^1.0.0"
+    "@cargoplane/cloud": "2.0.0-alpha.3",
+    "@aws-sdk/client-iot": "^3.758.0",
+    "@aws-sdk/client-iot-data-plane": "^3.758.0",
+    "@aws-sdk/client-sts": "^3.758.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.33",
-    "@types/node": "^8.10.55",
-    "aws-sdk": "^2.554.0",
-    "serverless": "^1.54.0",
-    "serverless-plugin-typescript": "^1.1.7",
-    "ts-node": "^8.0.3",
-    "typescript": "^3.6.4"
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^20.17.24",
+    "osls": "^3.49.0",
+    "serverless-plugin-typescript": "^2.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "5.5.x"
   }
 }

@@ -1,27 +1,34 @@
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
-import {ChatService} from './chat.service';
-import {ChatMessage} from '../model/chat';
+import {CommonModule} from "@angular/common";
+import {Component, input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {ChatMessage} from '../model/chat';
+import {ChatService} from './chat.service';
 
 @Component({
   selector: 'app-chat-window',
-  templateUrl: './chat-window.component.html'
+  imports: [CommonModule],
+  template: `
+    <div>
+      <ul>
+        <li *ngFor="let line of chatLines">{{ line }}</li>
+      </ul>
+    </div>`
 })
 export class ChatWindowComponent implements OnInit, OnDestroy {
-  @Input() topic: string;
+  topic = input.required<string>();
 
-  chats: string[];
-  subscription?: Subscription;
+  protected chatLines: string[] = [];
+  private subscription?: Subscription;
 
-  constructor(private chatService: ChatService) {
+  constructor(private readonly chatService: ChatService) {
   }
 
   ngOnInit() {
-    this.chats = [];
+    this.chatLines = [];
 
-    this.subscription = this.chatService.observe(this.topic)
+    this.subscription = this.chatService.observe(this.topic())
       .subscribe(message => {
-        this.chats.push((message as ChatMessage).text);
+        this.chatLines.push(message.text);
         console.log(message);
       });
   }

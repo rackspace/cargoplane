@@ -1,29 +1,38 @@
 import {Component} from '@angular/core';
+import {FormsModule} from "@angular/forms";
+import {ChatWindowComponent} from "./chat-window.component";
 import {ChatService} from './chat.service';
-import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
+  imports: [ChatWindowComponent, FormsModule],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  styles: `
+    form {
+      width: 100%;
+      text-align: center;
+    }
+
+    .chatwindows {
+      width: 100%;
+      td {
+        border: thin solid black;
+        padding: 0 8px;
+        vertical-align: top;
+      }
+    }
+  `
 })
 export class ChatComponent {
-  chatForm = new FormGroup({
-    topic: new FormControl('chattopic/mqtt'),
-    text: new FormControl('')
-  });
+  topic = 'chattopic/mqtt';
+  text = '';
 
   constructor(private chatService: ChatService) {
   }
 
   onSubmit() {
-    const topic = this.chatForm.value.topic;
-
-    // TODO: Use EventEmitter with form value
-    console.log('sending: ', this.chatForm.value);
-    if (this.chatForm.value.text) {
-      this.chatService.publish(topic, this.chatForm.value.text);
-      this.chatForm.controls.text.patchValue('');
-    }
+    console.log('sending: ', this.text);
+    this.chatService.publish(this.topic, this.text);
+    this.text = "";
   }
 }

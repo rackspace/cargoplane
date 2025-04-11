@@ -5,7 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 To use, first deploy the `/demo/cloud` project and set the resulting API Gateway endpoint
 to the environment variable `REACT_APP_API_URL`. For example:
 
-`export REACT_APP_API_URL="https://mj4kose6r0.execute-api.us-east-1.amazonaws.com/dev/" && npm start`
+`export REACT_APP_API_URL="https://mj4kose6r0.execute-api.us-east-1.amazonaws.com/" && npm start`
 
 Of course in a real client, you'll need to provide this endpoint to the browser by some other means.
 It is being used here in `src/chat/chat.service.js`.
