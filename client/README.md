@@ -1,10 +1,18 @@
 # Cargoplane Client - Serverless publish/subscribe for webapps and AWS
 
-Cargoplane is a toolset to help you quickly _transport message cargo_ between webapp clients and a backend running in the AWS cloud.
+## What is this?
 
-__Full documentation is published [online](https://docs.onica.com/projects/cargoplane).__
+Cargoplane is a toolset to help you quickly and **easily** *transport message* "cargo" between webapp clients and a
+backend running in the AWS cloud.
 
-Cargoplane is written in Typescript, but transpiled to Javascript.
-The client code is ES5, and so will work in any remotely modern browser.
+### Example Use Cases
 
-This project is developed and maintained by the [Onica](https://www.onica.com) Cloud Native Development Practice.
+- Cloud to webapp broadcast notifications of changes
+- Cloud Asynchronous operation results to individuals or groups of users
+- Client-to-client chat or notifications - to targeting individuals, groups, or everyone.
+- Extend a cloud event-driven architecture to webapps.
+
+
+## Documentation
+
+[See the base repository for full documentation.](https://github.com/rackspace/cargoplane/blob/master/README.md)

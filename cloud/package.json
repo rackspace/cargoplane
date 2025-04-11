@@ -1,6 +1,6 @@
 {
   "name": "@cargoplane/cloud",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "AWS cloud-side library to support pub/sub with @cargoplane/client.",
   "keywords": [
     "aws",

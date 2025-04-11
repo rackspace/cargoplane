@@ -2,7 +2,6 @@
 
 # Cargoplane - Serverless publish/subscribe for webapps and AWS
 
-
 ## What is this?
 
 Cargoplane is a toolset to help you quickly and **easily** *transport message* "cargo" between webapp clients and a
