@@ -1,6 +1,6 @@
 import {CargoplaneCloud, CargoplaneCredentialRequest} from '@cargoplane/cloud';
 
-const carogplane = new CargoplaneCloud();
+const cargoplane = new CargoplaneCloud();
 const PUB_SUB_ROLE_NAME = process.env.PUB_SUB_ROLE_NAME;
 
 export const getCredentials = async () => {
@@ -18,7 +18,7 @@ export const getCredentials = async () => {
         ]
     };
 
-    let responseBody = await carogplane.createCredentials(credConfig);
+    let responseBody = await cargoplane.createCredentials(credConfig);
 
     // Wow, this is annoying. Have you tried @sailplane/lambda-utils? ;-)
     let response = {
@@ -41,7 +41,7 @@ export const publish = async (event: {body:string}) => {
         text: body.text
     };
 
-    await carogplane.publish(topic, message);
+    await cargoplane.publish(topic, message);
 
     return {
         statusCode: 200,
