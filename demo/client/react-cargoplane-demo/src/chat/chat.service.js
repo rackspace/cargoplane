@@ -34,7 +34,7 @@ export class ChatService {
   /**
    * Obtain an RxJs Observable to chat messages.
    * @param topic topic to subscribe
-   * @returns Observable that will receive events when chat message are received.
+   * @returns Observable that will receive events when chat messages are received.
    */
   observe(topic) {
     console.log("subscribing to ", topic);
